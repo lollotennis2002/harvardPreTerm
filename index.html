@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Google Sheet Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Live Data from Google Sheet</h2>
+<div id="table-container">Loading...</div>
+
+<script>
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSeZUFXzPOw4jI4lsbE8tYhySh1CBK-xeIhDAe6E5ZkAZYHCn2NrseRdzX6DZcwPZGLy6hU6ENAEfQ3/pub?gid=31153433&single=true&output=csv";
+
+fetch(csvUrl)
+  .then(response => response.text())
+  .then(csvText => {
+    const rows = csvText.trim().split("\n").map(row => row.split(","));
+    let html = "<table>";
+    rows.forEach((row, i) => {
+      html += "<tr>";
+      row.forEach(cell => {
+        if (i === 0) {
+          html += `<th>${cell}</th>`;
+        } else {
+          html += `<td>${cell}</td>`;
+        }
+      });
+      html += "</tr>";
+    });
+    html += "</table>";
+    document.getElementById("table-container").innerHTML = html;
+  })
+  .catch(err => {
+    console.error("Error loading CSV:", err);
+    document.getElementById("table-container").textContent = "Error loading data.";
+  });
+</script>
+
+</body>
+</html>
